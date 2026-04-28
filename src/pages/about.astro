@@ -1,0 +1,104 @@
+---
+// src/pages/about.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About" currentPage="/about">
+  <style>
+    .content-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 80px);
+      gap: 60px;
+      padding: 0 48px;
+    }
+
+    /* ─── LEFT BLOCK ──────────────────────────────────── */
+    .left-block {
+      display: flex;
+      flex-direction: column;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .page-title-box {
+      background: #0e0b08;
+      padding: 22px 36px 18px;
+      margin-bottom: 0;
+      border-bottom: 1px solid #3a3020;
+    }
+
+    .page-title {
+      font-family: "Sekuya", sans-serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--white);
+      /* rough blocky feel */
+      -webkit-text-stroke: 0.5px #ffffff44;
+    }
+
+    .text-block {
+      background: #0e0b08;
+      padding: 28px 36px 36px;
+    }
+
+    .bio-text {
+      font-family: "Mulish", sans-serif;
+      font-size: 0.92rem;
+      font-weight: 300;
+      line-height: 1.9;
+      color: #c8c0b0;
+      /* Placeholder — podmień na swój tekst */
+    }
+
+    /* ─── RIGHT ILLUSTRATION ──────────────────────────── */
+    .illustration {
+      flex-shrink: 0;
+      width: 350px;
+    }
+
+    .illustration img {
+      width: 100%;
+      height: auto;
+      display: block;
+      /* cutout feel — zakładamy że obrazek ma białe tło lub przezroczystość */
+      filter: drop-shadow(0 4px 24px rgba(0,0,0,0.7));
+    }
+
+
+  </style>
+
+  <div class="content-wrap">
+
+    <!-- Left: title + bio -->
+    <div class="left-block">
+      <div class="page-title-box">
+        <h1 class="page-title">About</h1>
+      </div>
+      <div class="text-block">
+        <p class="bio-text">
+          {/*
+            Podmień ten tekst na swój opis.
+            Możesz użyć kilku akapitów:
+          */}
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+          cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+          non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        </p>
+      </div>
+    </div>
+
+    <!-- Right: illustration -->
+    <div class="illustration">
+      <img src="/images/cicada.png" alt="mascot" />
+
+    </div>
+
+  </div>
+</BaseLayout>

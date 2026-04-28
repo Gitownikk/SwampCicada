@@ -1,0 +1,159 @@
+---
+// src/pages/contact.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Contact" currentPage="/contact">
+  <style>
+    .content-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 80px);
+      gap: 60px;
+      padding: 0 48px;
+    }
+
+    /* ─── LEFT BLOCK ──────────────────────────────────── */
+    .left-block {
+      display: flex;
+      flex-direction: column;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .page-title-box {
+      background: #0e0b08;
+      padding: 22px 36px 18px;
+      border-bottom: 1px solid #3a3020;
+    }
+
+    .page-title {
+      font-family: "Sekuya", sans-serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--white);
+      -webkit-text-stroke: 0.5px #ffffff44;
+    }
+
+    .contact-block {
+      background: #0e0b08;
+      padding: 28px 36px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* ─── CONTACT ROWS ────────────────────────────────── */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      text-decoration: none;
+      color: var(--white);
+      transition: color 0.2s;
+    }
+
+    .contact-item:hover {
+      color: #7a9a30;
+    }
+
+    .contact-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s;
+    }
+
+    .contact-label {
+      font-family: "Mulish", sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── RIGHT ILLUSTRATION ──────────────────────────── */
+    .illustration {
+      flex-shrink: 0;
+      width: 450px;
+    }
+
+    .illustration img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.7));
+    }
+
+
+  </style>
+
+  <div class="content-wrap">
+
+    <!-- Left: title + contact links -->
+    <div class="left-block">
+      <div class="page-title-box">
+        <h1 class="page-title">Contact</h1>
+      </div>
+      <div class="contact-block">
+
+        <!-- Instagram -->
+        <a href="https://instagram.com/wawryn" target="_blank" rel="noopener noreferrer" class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+          <span class="contact-label">wawryn</span>
+        </a>
+
+        <!-- Twitter / X -->
+        <a href="https://twitter.com/wawryn" target="_blank" rel="noopener noreferrer" class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 4 L20 20 M20 4 L4 20" stroke-width="2"/>
+              <path d="M2 5h6l4 5 4-5h6" stroke-width="1.4" fill="none"/>
+              <path d="M2 19h6l4-5 4 5h6" stroke-width="1.4" fill="none"/>
+            </svg>
+          </div>
+          <span class="contact-label">wawryn</span>
+        </a>
+
+        <!-- Email -->
+        <a href="mailto:karolwbien@gmail.com" class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+          </div>
+          <span class="contact-label">karolwbien@gmail.com</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Right: illustration -->
+    <div class="illustration">
+      <img src="/images/cicada2.png" alt="mascot" />
+    </div>
+
+  </div>
+</BaseLayout>

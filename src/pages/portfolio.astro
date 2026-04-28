@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const sections = [
+  {
+    id: 'digital',
+    label: 'Digital Art',
+    images: [
+      { src: '/images/digital/01.jpg', alt: '' },
+      { src: '/images/digital/02.jpg', alt: '' },
+      { src: '/images/digital/03.jpg', alt: '' },
+    ],
+  },
+  {
+    id: 'sculpture',
+    label: 'Sculpture',
+    images: [
+      { src: '/images/sculpture/01.jpg', alt: '' },
+      { src: '/images/sculpture/02.jpg', alt: '' },
+      { src: '/images/sculpture/03.jpg', alt: '' },
+    ],
+  },
+  {
+    id: 'painting',
+    label: 'Painting',
+    images: [
+      { src: '/images/painting/01.jpg', alt: '' },
+      { src: '/images/painting/02.jpg', alt: '' },
+      { src: '/images/painting/03.jpg', alt: '' },
+    ],
+  },
+];
+---
+
+<Layout title="Portfolio" description="Portfolio artystyczne">
+  {sections.map((section) => (
+    <section id={section.id}>
+      <h2>{section.label}</h2>
+      <div class="gallery">
+        {section.images.map((img) => (
+          <img src={img.src} alt={img.alt} loading="lazy" />
+        ))}
+      </div>
+    </section>
+  ))}
+</Layout>
+
+<style>
+  section {
+    margin-bottom: 5rem;
+  }
+
+  h2 {
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 1.5rem;
+  }
+
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+
+  .gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: 768px) {
+    .gallery {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gallery {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

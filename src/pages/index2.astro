@@ -1,0 +1,523 @@
+---
+// src/pages/index.astro
+// Portfolio homepage - dark art portfolio with lily pad decorations
+---
+
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Josefin+Sans:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *, *::before, *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #0a0603;
+        --bg2: #110d07;
+        --white: #f0ece4;
+        --dim: #8a8070;
+        --accent: #c8a84b;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        color: var(--white);
+        font-family: 'Josefin Sans', sans-serif;
+        overflow-x: hidden;
+      }
+
+      /* ─── LAYOUT ─────────────────────────────────────── */
+      .page {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .inner {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 80px;
+        padding: 60px 40px;
+        max-width: 1100px;
+        width: 100%;
+      }
+
+      /* ─── LILY PADS ──────────────────────────────────── */
+      .lily-corner {
+        position: absolute;
+        z-index: 1;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .lily-corner--tl { top: 0; left: 0; width: 300px; height: 280px; }
+      .lily-corner--tr { top: 0; right: 0; width: 260px; height: 240px; }
+      .lily-corner--bl { bottom: 0; left: 0; width: 280px; height: 240px; }
+      .lily-corner--br { bottom: 0; right: 0; width: 240px; height: 200px; }
+
+      .lily-corner svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ─── LEFT PANEL ─────────────────────────────────── */
+      .left {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-width: 200px;
+        flex-shrink: 0;
+      }
+
+      .logo {
+        font-family: 'Cinzel', serif;
+        font-size: 3.2rem;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: -2px;
+        color: var(--white);
+        margin-bottom: 36px;
+        /* Rough hand-lettered feel via text-shadow */
+        text-shadow:
+          2px 2px 0 #00000066,
+          -1px -1px 0 #ffffff22;
+        /* Slightly distorted */
+        transform: scaleX(0.88) skewX(-3deg);
+        transform-origin: left center;
+      }
+
+      .nav-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 36px;
+      }
+
+      .nav-group + .nav-group {
+        margin-top: 0;
+      }
+
+      .nav-link {
+        font-family: 'Josefin Sans', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--white);
+        text-decoration: none;
+        cursor: pointer;
+        transition: color 0.2s, letter-spacing 0.2s;
+        line-height: 2;
+      }
+
+      .nav-link:hover {
+        color: var(--accent);
+        letter-spacing: 0.24em;
+      }
+
+      /* ─── RIGHT PANEL ────────────────────────────────── */
+      .right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      /* Slideshow */
+      .slideshow {
+        position: relative;
+        width: 100%;
+        max-width: 580px;
+        aspect-ratio: 16 / 9;
+        background: #1a1410;
+        border: 1px solid #2a2018;
+        overflow: hidden;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slide.active {
+        opacity: 1;
+      }
+
+      .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* Placeholder slides (remove when real images are added) */
+      .slide-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Josefin Sans', sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        color: #3a3028;
+        background: #110e0a;
+        text-transform: uppercase;
+      }
+
+      /* Dots */
+      .slide-dots {
+        display: flex;
+        gap: 6px;
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3;
+      }
+
+      .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: rgba(240,236,228,0.3);
+        cursor: pointer;
+        transition: background 0.3s;
+        border: none;
+        padding: 0;
+      }
+
+      .dot.active {
+        background: var(--white);
+      }
+
+      /* ─── SOCIAL ROW ─────────────────────────────────── */
+      .social-row {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        padding-top: 4px;
+      }
+
+      .social-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        text-decoration: none;
+        color: var(--dim);
+        transition: color 0.2s;
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+        font-family: 'Josefin Sans', sans-serif;
+        font-weight: 300;
+      }
+
+      .social-item:hover {
+        color: var(--white);
+      }
+
+      .social-item svg {
+        flex-shrink: 0;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+      }
+
+      .social-item:hover svg {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+
+      <!-- ── LILY CORNERS ── -->
+      <!-- Top Left -->
+      <div class="lily-corner lily-corner--tl">
+        <svg viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="water-tl" cx="30%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#1a3a1a"/>
+              <stop offset="100%" stop-color="#0a1a0a"/>
+            </radialGradient>
+          </defs>
+          <!-- Water base -->
+          <ellipse cx="80" cy="100" rx="160" ry="140" fill="url(#water-tl)" opacity="0.9"/>
+          <!-- Lily pads -->
+          <g opacity="0.92">
+            <!-- Large pad -->
+            <ellipse cx="120" cy="130" rx="70" ry="62" fill="#2d5a2d"/>
+            <ellipse cx="120" cy="130" rx="70" ry="62" fill="#3a7a3a" opacity="0.5"/>
+            <path d="M120 130 L120 68" stroke="#1a3a1a" stroke-width="1.5" opacity="0.6"/>
+            <!-- Pad notch -->
+            <path d="M120 130 L88 75 Q120 60 152 75 Z" fill="#0a1a0a" opacity="0.4"/>
+            <!-- Veins -->
+            <path d="M120 130 L180 110" stroke="#1a3a1a" stroke-width="0.8" opacity="0.5"/>
+            <path d="M120 130 L155 175" stroke="#1a3a1a" stroke-width="0.8" opacity="0.5"/>
+            <path d="M120 130 L65 160" stroke="#1a3a1a" stroke-width="0.8" opacity="0.5"/>
+            <path d="M120 130 L75 95" stroke="#1a3a1a" stroke-width="0.8" opacity="0.5"/>
+          </g>
+          <!-- Medium pad -->
+          <g opacity="0.88">
+            <ellipse cx="40" cy="200" rx="50" ry="44" fill="#2a522a"/>
+            <path d="M40 200 L40 156" stroke="#1a3a1a" stroke-width="1.2" opacity="0.6"/>
+            <path d="M40 200 L18 160 Q40 148 62 160 Z" fill="#0a1a0a" opacity="0.35"/>
+          </g>
+          <!-- Small pad -->
+          <g opacity="0.82">
+            <ellipse cx="220" cy="60" rx="38" ry="33" fill="#355535"/>
+            <path d="M220 60 L220 27" stroke="#1a3a1a" stroke-width="1" opacity="0.5"/>
+            <path d="M220 60 L203 30 Q220 20 237 30 Z" fill="#0a1a0a" opacity="0.35"/>
+          </g>
+          <!-- Flower on large pad -->
+          <g transform="translate(148, 105)">
+            <circle cx="0" cy="0" r="5" fill="#e8c84a" opacity="0.9"/>
+            <ellipse cx="0" cy="-9" rx="4" ry="7" fill="#f0d060" opacity="0.85" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-9" rx="4" ry="7" fill="#f0d060" opacity="0.85" transform="rotate(60)"/>
+            <ellipse cx="0" cy="-9" rx="4" ry="7" fill="#f0d060" opacity="0.85" transform="rotate(120)"/>
+            <ellipse cx="0" cy="-9" rx="4" ry="7" fill="#f0d060" opacity="0.85" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-9" rx="4" ry="7" fill="#f0d060" opacity="0.85" transform="rotate(240)"/>
+            <ellipse cx="0" cy="-9" rx="4" ry="7" fill="#f0d060" opacity="0.85" transform="rotate(300)"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Top Right -->
+      <div class="lily-corner lily-corner--tr">
+        <svg viewBox="0 0 260 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="water-tr" cx="70%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#1a3a1a"/>
+              <stop offset="100%" stop-color="#0a1a0a"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="200" cy="80" rx="150" ry="130" fill="url(#water-tr)" opacity="0.88"/>
+          <g opacity="0.9">
+            <ellipse cx="170" cy="100" rx="65" ry="58" fill="#2d5a2d"/>
+            <ellipse cx="170" cy="100" rx="65" ry="58" fill="#3a7a3a" opacity="0.45"/>
+            <path d="M170 100 L170 42" stroke="#1a3a1a" stroke-width="1.5" opacity="0.6"/>
+            <path d="M170 100 L140 47 Q170 32 200 47 Z" fill="#0a1a0a" opacity="0.35"/>
+            <path d="M170 100 L230 80" stroke="#1a3a1a" stroke-width="0.8" opacity="0.4"/>
+            <path d="M170 100 L200 145" stroke="#1a3a1a" stroke-width="0.8" opacity="0.4"/>
+            <path d="M170 100 L115 125" stroke="#1a3a1a" stroke-width="0.8" opacity="0.4"/>
+          </g>
+          <g opacity="0.8">
+            <ellipse cx="240" cy="180" rx="42" ry="36" fill="#2a522a"/>
+            <path d="M240 180 L240 144" stroke="#1a3a1a" stroke-width="1" opacity="0.5"/>
+            <path d="M240 180 L220 147 Q240 135 260 147 Z" fill="#0a1a0a" opacity="0.3"/>
+          </g>
+          <!-- Flower -->
+          <g transform="translate(130, 75)">
+            <circle cx="0" cy="0" r="4" fill="#e8c84a" opacity="0.9"/>
+            <ellipse cx="0" cy="-8" rx="3.5" ry="6" fill="#f0d060" opacity="0.85" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-8" rx="3.5" ry="6" fill="#f0d060" opacity="0.85" transform="rotate(72)"/>
+            <ellipse cx="0" cy="-8" rx="3.5" ry="6" fill="#f0d060" opacity="0.85" transform="rotate(144)"/>
+            <ellipse cx="0" cy="-8" rx="3.5" ry="6" fill="#f0d060" opacity="0.85" transform="rotate(216)"/>
+            <ellipse cx="0" cy="-8" rx="3.5" ry="6" fill="#f0d060" opacity="0.85" transform="rotate(288)"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Bottom Left -->
+      <div class="lily-corner lily-corner--bl">
+        <svg viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="water-bl" cx="25%" cy="75%" r="70%">
+              <stop offset="0%" stop-color="#1a3a1a"/>
+              <stop offset="100%" stop-color="#0a1a0a"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="70" cy="180" rx="155" ry="120" fill="url(#water-bl)" opacity="0.88"/>
+          <g opacity="0.9">
+            <ellipse cx="100" cy="160" rx="62" ry="55" fill="#2d5a2d"/>
+            <ellipse cx="100" cy="160" rx="62" ry="55" fill="#3a7a3a" opacity="0.45"/>
+            <path d="M100 160 L100 105" stroke="#1a3a1a" stroke-width="1.5" opacity="0.6"/>
+            <path d="M100 160 L72 108 Q100 94 128 108 Z" fill="#0a1a0a" opacity="0.35"/>
+            <path d="M100 160 L158 142" stroke="#1a3a1a" stroke-width="0.8" opacity="0.4"/>
+            <path d="M100 160 L130 205" stroke="#1a3a1a" stroke-width="0.8" opacity="0.4"/>
+            <path d="M100 160 L48 185" stroke="#1a3a1a" stroke-width="0.8" opacity="0.4"/>
+          </g>
+          <g opacity="0.78">
+            <ellipse cx="210" cy="210" rx="38" ry="33" fill="#2a522a"/>
+            <path d="M210 210 L210 177" stroke="#1a3a1a" stroke-width="1" opacity="0.5"/>
+            <path d="M210 210 L192 180 Q210 168 228 180 Z" fill="#0a1a0a" opacity="0.3"/>
+          </g>
+          <!-- Small white flower -->
+          <g transform="translate(35, 215)">
+            <circle cx="0" cy="0" r="3" fill="#d8c870" opacity="0.9"/>
+            <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#e8e8c0" opacity="0.8" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#e8e8c0" opacity="0.8" transform="rotate(90)"/>
+            <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#e8e8c0" opacity="0.8" transform="rotate(180)"/>
+            <ellipse cx="0" cy="-6" rx="2.5" ry="5" fill="#e8e8c0" opacity="0.8" transform="rotate(270)"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Bottom Right -->
+      <div class="lily-corner lily-corner--br">
+        <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="water-br" cx="75%" cy="75%" r="70%">
+              <stop offset="0%" stop-color="#1a3a1a"/>
+              <stop offset="100%" stop-color="#0a1a0a"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="185" cy="155" rx="140" ry="110" fill="url(#water-br)" opacity="0.85"/>
+          <g opacity="0.88">
+            <ellipse cx="165" cy="130" rx="58" ry="52" fill="#2d5a2d"/>
+            <ellipse cx="165" cy="130" rx="58" ry="52" fill="#3a7a3a" opacity="0.45"/>
+            <path d="M165 130 L165 78" stroke="#1a3a1a" stroke-width="1.5" opacity="0.6"/>
+            <path d="M165 130 L138 81 Q165 67 192 81 Z" fill="#0a1a0a" opacity="0.35"/>
+            <path d="M165 130 L220 112" stroke="#1a3a1a" stroke-width="0.8" opacity="0.4"/>
+            <path d="M165 130 L190 172" stroke="#1a3a1a" stroke-width="0.8" opacity="0.4"/>
+          </g>
+          <!-- Tiny flower -->
+          <g transform="translate(218, 175)">
+            <circle cx="0" cy="0" r="3.5" fill="#e8c84a" opacity="0.9"/>
+            <ellipse cx="0" cy="-7" rx="3" ry="5.5" fill="#f5e070" opacity="0.85" transform="rotate(0)"/>
+            <ellipse cx="0" cy="-7" rx="3" ry="5.5" fill="#f5e070" opacity="0.85" transform="rotate(72)"/>
+            <ellipse cx="0" cy="-7" rx="3" ry="5.5" fill="#f5e070" opacity="0.85" transform="rotate(144)"/>
+            <ellipse cx="0" cy="-7" rx="3" ry="5.5" fill="#f5e070" opacity="0.85" transform="rotate(216)"/>
+            <ellipse cx="0" cy="-7" rx="3" ry="5.5" fill="#f5e070" opacity="0.85" transform="rotate(288)"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- ── MAIN CONTENT ── -->
+      <div class="inner">
+
+        <!-- Left: nav -->
+        <nav class="left" aria-label="Main navigation">
+          <div class="logo" aria-label="Logo">鸟巢</div>
+
+          <div class="nav-group">
+            <a href="/digital-art" class="nav-link">Digital Art</a>
+            <a href="/paintings" class="nav-link">Paintings</a>
+            <a href="/sculptures" class="nav-link">Sculptures</a>
+          </div>
+
+          <div class="nav-group">
+            <a href="/about" class="nav-link">About</a>
+            <a href="/contact" class="nav-link">Contact</a>
+          </div>
+        </nav>
+
+        <!-- Right: slideshow + social -->
+        <div class="right">
+          <div class="slideshow" id="slideshow">
+            <!--
+              Replace each .slide-placeholder div with an <img> tag:
+              <img src="/images/your-photo.jpg" alt="Artwork title" />
+
+              Example:
+              <div class="slide active">
+                <img src="/images/artwork1.jpg" alt="Snail girl digital art" />
+              </div>
+            -->
+            <div class="slide active">
+              <div class="slide-placeholder">artwork 01</div>
+            </div>
+            <div class="slide">
+              <div class="slide-placeholder">artwork 02</div>
+            </div>
+            <div class="slide">
+              <div class="slide-placeholder">artwork 03</div>
+            </div>
+            <div class="slide">
+              <div class="slide-placeholder">artwork 04</div>
+            </div>
+
+            <div class="slide-dots" id="dots"></div>
+          </div>
+
+          <!-- Social -->
+          <div class="social-row">
+            <a
+              href="https://instagram.com/wawryn"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="social-item"
+            >
+              <!-- Instagram icon -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+              </svg>
+              wawryn
+            </a>
+
+            <a
+              href="mailto:karol@bios"
+              class="social-item"
+            >
+              <!-- Envelope icon -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <polyline points="2,4 12,13 22,4"/>
+              </svg>
+              karol@bios
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      const slides = document.querySelectorAll('.slide');
+      const dotsContainer = document.getElementById('dots');
+      let current = 0;
+
+      // Build dots
+      slides.forEach((_, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'dot' + (i === 0 ? ' active' : '');
+        btn.setAttribute('aria-label', `Slide ${i + 1}`);
+        btn.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(btn);
+      });
+
+      const dots = dotsContainer.querySelectorAll('.dot');
+
+      function goTo(index) {
+        slides[current].classList.remove('active');
+        dots[current].classList.remove('active');
+        current = (index + slides.length) % slides.length;
+        slides[current].classList.add('active');
+        dots[current].classList.add('active');
+      }
+
+      // Auto-advance every 5 seconds
+      let timer = setInterval(() => goTo(current + 1), 5000);
+
+      // Pause on hover
+      const slideshow = document.getElementById('slideshow');
+      slideshow.addEventListener('mouseenter', () => clearInterval(timer));
+      slideshow.addEventListener('mouseleave', () => {
+        timer = setInterval(() => goTo(current + 1), 5000);
+      });
+    </script>
+  </body>
+</html>
