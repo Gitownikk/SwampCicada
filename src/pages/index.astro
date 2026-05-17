@@ -5,6 +5,8 @@ import { Image } from 'astro:assets';
 import WaterBackground from '../layouts/WaterBackground.astro';
 import WaterLilies from '../layouts/WaterLilies.astro';
 
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+
 const imageModules = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/images/carousel/*.{jpg,jpeg,png,webp}'
 );
@@ -42,30 +44,7 @@ const slides = await Promise.all(
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Swamp Cicada</title>
     <style>
-      /* ─── CZCIONKI LOKALNE ────────────────────────────── */
-      @font-face {
-        font-family: "Sekuya";
-        src: url("/fonts/Sekuya/Sekuya-Regular.ttf") format("truetype");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Mulish";
-        src: url("/fonts/Mulish/Mulish-Light.ttf") format("truetype");
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Mulish";
-        src: url("/fonts/Mulish/Mulish-Bold.ttf") format("truetype");
-        font-weight: 700;
-        font-style: normal;
-        font-display: swap;
-      }
+      /* @font-face injected via script below using BASE_URL */
 
       /* ─── RESET ───────────────────────────────────────── */
       *, *::before, *::after {
@@ -331,22 +310,23 @@ const slides = await Promise.all(
     <div class="page">
       <div class="inner">
 
-<nav class="left" aria-label="Main navigation">
-  <a href={import.meta.env.BASE_URL} class="logo" aria-label="Logo">
-    <img src={logo} alt="Logo" />
-  </a>
+        <!-- Left: nav -->
+        <nav class="left" aria-label="Main navigation">
+          <a href={base} class="logo" aria-label="Logo">
+            <img src={logo} alt="Logo" />
+          </a>
 
-  <div class="nav-group">
-    <a href={`${import.meta.env.BASE_URL}digital-art`} class="nav-link">Digital Art</a>
-    <a href={`${import.meta.env.BASE_URL}paintings`} class="nav-link">Paintings</a>
-    <a href={`${import.meta.env.BASE_URL}sculptures`} class="nav-link">Sculptures</a>
-  </div>
+          <div class="nav-group">
+            <a href={`${base}digital-art`} class="nav-link">Digital Art</a>
+            <a href={`${base}paintings`} class="nav-link">Paintings</a>
+            <a href={`${base}sculptures`} class="nav-link">Sculptures</a>
+          </div>
 
-  <div class="nav-group">
-    <a href={`${import.meta.env.BASE_URL}about`} class="nav-link">About</a>
-    <a href={`${import.meta.env.BASE_URL}contact`} class="nav-link">Contact</a>
-  </div>
-</nav>
+          <div class="nav-group">
+            <a href={`${base}about`} class="nav-link">About</a>
+            <a href={`${base}contact`} class="nav-link">Contact</a>
+          </div>
+        </nav>
 
         <!-- Right: slideshow + social -->
         <div class="right">
@@ -397,6 +377,36 @@ const slides = await Promise.all(
 
       </div>
     </div>
+
+    <script>
+      // Inject @font-face with correct base URL for GitHub Pages
+      const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+      const style = document.createElement('style');
+      style.textContent = `
+        @font-face {
+          font-family: "Sekuya";
+          src: url("${base}fonts/Sekuya/Sekuya-Regular.ttf") format("truetype");
+          font-weight: normal;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: "Mulish";
+          src: url("${base}fonts/Mulish/Mulish-Light.ttf") format("truetype");
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: "Mulish";
+          src: url("${base}fonts/Mulish/Mulish-Bold.ttf") format("truetype");
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+        }
+      `;
+      document.head.prepend(style);
+    </script>
 
     <script>
       // ── Rysuj slajdy jako canvas

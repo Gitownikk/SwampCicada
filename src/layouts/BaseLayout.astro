@@ -6,6 +6,7 @@ export interface Props {
 }
 const { title, currentPage = '' } = Astro.props;
 import logo from '../assets/images/logo2.svg?url';
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
 const navLinks = [
   { href: '/digital-art', label: 'Digital Art' },
@@ -27,36 +28,13 @@ const allLinks = [...navLinks, ...secondaryLinks];
     <title>{title}</title>
 
     <!-- ─── PRELOAD CZCIONEK ───────────────────────────── -->
-    <link rel="preload" href="/fonts/Sekuya/Sekuya-Regular.ttf" as="font" type="font/ttf" crossorigin />
-    <link rel="preload" href="/fonts/Mulish/Mulish-Light.ttf" as="font" type="font/ttf" crossorigin />
-    <link rel="preload" href="/fonts/Mulish/Mulish-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={`${base}fonts/Sekuya/Sekuya-Regular.ttf`} as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href={`${base}fonts/Mulish/Mulish-Light.ttf`} as="font" type="font/ttf" crossorigin />
+    <link rel="preload" href={`${base}fonts/Mulish/Mulish-Bold.woff2`} as="font" type="font/woff2" crossorigin />
 
     <style>
 
-      /* ─── CZCIONKI LOKALNE ────────────────────────────── */
-      @font-face {
-        font-family: "Sekuya";
-        src: url("/fonts/Sekuya/Sekuya-Regular.ttf") format("truetype");
-        font-weight: normal;
-        font-style: normal;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Mulish";
-        src: url("/fonts/Mulish/Mulish-Light.ttf") format("truetype");
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Mulish";
-        src:url("/fonts/Mulish/Mulish-Bold.ttf") format("truetype");
-        font-weight: 700;
-        font-style: normal;
-        font-display: swap;
-      }
+      /* @font-face injected via script below using BASE_URL */
 
       /* ─── RESET ───────────────────────────────────────── */
       *, *::before, *::after {
@@ -263,7 +241,7 @@ const allLinks = [...navLinks, ...secondaryLinks];
   <body>
 
     <header class="navbar">
-      <a href="/" class="logo" aria-label="Portfolio">
+      <a href={base} class="logo" aria-label="Portfolio">
         <img src={logo} alt="Logo" />
       </a>
 
@@ -271,7 +249,7 @@ const allLinks = [...navLinks, ...secondaryLinks];
       <nav class="nav-primary" aria-label="Primary navigation">
         {navLinks.map(link => (
           <a
-            href={link.href}
+            href={base + link.href.slice(1)}
             class={`nav-link${currentPage === link.href ? ' active' : ''}`}
           >
             {link.label}
@@ -283,7 +261,7 @@ const allLinks = [...navLinks, ...secondaryLinks];
       <nav class="nav-secondary" aria-label="Secondary navigation">
         {secondaryLinks.map(link => (
           <a
-            href={link.href}
+            href={base + link.href.slice(1)}
             class={`nav-link${currentPage === link.href ? ' active' : ''}`}
           >
             {link.label}
@@ -302,7 +280,7 @@ const allLinks = [...navLinks, ...secondaryLinks];
       <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         {navLinks.map(link => (
           <a
-            href={link.href}
+            href={base + link.href.slice(1)}
             class={`nav-link${currentPage === link.href ? ' active' : ''}`}
           >
             {link.label}
@@ -311,7 +289,7 @@ const allLinks = [...navLinks, ...secondaryLinks];
         <div class="nav-divider"></div>
         {secondaryLinks.map(link => (
           <a
-            href={link.href}
+            href={base + link.href.slice(1)}
             class={`nav-link${currentPage === link.href ? ' active' : ''}`}
           >
             {link.label}
@@ -323,6 +301,35 @@ const allLinks = [...navLinks, ...secondaryLinks];
     <main class="page-content">
       <slot />
     </main>
+
+    <script>
+      const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+      const style = document.createElement('style');
+      style.textContent = `
+        @font-face {
+          font-family: "Sekuya";
+          src: url("${base}fonts/Sekuya/Sekuya-Regular.ttf") format("truetype");
+          font-weight: normal;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: "Mulish";
+          src: url("${base}fonts/Mulish/Mulish-Light.ttf") format("truetype");
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: "Mulish";
+          src: url("${base}fonts/Mulish/Mulish-Bold.ttf") format("truetype");
+          font-weight: 700;
+          font-style: normal;
+          font-display: swap;
+        }
+      `;
+      document.head.prepend(style);
+    </script>
 
     <script>
       const btn = document.getElementById('hamburger');
