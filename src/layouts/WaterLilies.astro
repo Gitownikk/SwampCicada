@@ -1,0 +1,59 @@
+---
+// src/layouts/WaterLilies.astro
+import leftTop from '../assets/images/lilypads/left-top.png';
+import leftBottom from '../assets/images/lilypads/left-bottom.png';
+import rightTop from '../assets/images/lilypads/right-top.png';
+import rightBottom from '../assets/images/lilypads/right-bottom.png';
+---
+
+<div class="lily-corner lily-corner--tl" aria-hidden="true">
+  <img src={leftTop.src} alt="" />
+</div>
+
+<div class="lily-corner lily-corner--tr" aria-hidden="true">
+  <img src={rightTop.src} alt="" />
+</div>
+
+<div class="lily-corner lily-corner--bl" aria-hidden="true">
+  <img src={leftBottom.src} alt="" />
+</div>
+
+<div class="lily-corner lily-corner--br" aria-hidden="true">
+  <img src={rightBottom.src} alt="" />
+</div>
+
+<style>
+  .lily-corner {
+    position: fixed;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .lily-corner--tl { top: -10px;    left: -10px;  width: clamp(500px, 24vw, 700px); }
+  .lily-corner--tr { top: -10px;    right: -10px; width: clamp(200px, 24vw, 350px); }
+  .lily-corner--bl { bottom: -10px; left: -10px;  width: clamp(200px, 24vw, 320px); }
+  .lily-corner--br { bottom: -10px; right: -10px; width: clamp(450px, 24vw, 320px); }
+
+  .lily-corner img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .lily-corner--tl { animation: drift-a 9s  ease-in-out infinite alternate; }
+  .lily-corner--tr { animation: drift-b 11s ease-in-out infinite alternate; }
+  .lily-corner--bl { animation: drift-b 10s ease-in-out infinite alternate; }
+  .lily-corner--br { animation: drift-a 12s ease-in-out infinite alternate; }
+
+  @keyframes drift-a {
+    0%   { transform: translateX(0px)  translateY(0px)  rotate(0deg); }
+    40%  { transform: translateX(5px)  translateY(-3px) rotate(0.5deg); }
+    100% { transform: translateX(-4px) translateY(3px)  rotate(-0.4deg); }
+  }
+
+  @keyframes drift-b {
+    0%   { transform: translateX(0px)  translateY(0px)  rotate(0deg); }
+    35%  { transform: translateX(-5px) translateY(4px)  rotate(-0.6deg); }
+    100% { transform: translateX(4px)  translateY(-3px) rotate(0.5deg); }
+  }
+</style>

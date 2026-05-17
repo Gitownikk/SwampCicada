@@ -1,9 +1,15 @@
 ---
 // src/pages/contact.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import cicada2 from '../assets/images/cicada2.png';
+import WaterBackground from '../layouts/WaterBackground.astro';
+import WaterLilies from '../layouts/WaterLilies.astro';
 ---
 
 <BaseLayout title="Contact" currentPage="/contact">
+  <WaterBackground />
+  <WaterLilies />
   <style>
     .content-wrap {
       display: flex;
@@ -12,6 +18,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       min-height: calc(100vh - 80px);
       gap: 60px;
       padding: 0 48px;
+      position: relative;
+      z-index: 1;
     }
 
     /* ─── LEFT BLOCK ──────────────────────────────────── */
@@ -100,7 +108,42 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.7));
     }
 
+    /* ─── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      .content-wrap {
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 24px;
+        gap: 32px;
+        min-height: unset;
+      }
 
+      .left-block {
+        max-width: 100%;
+      }
+
+      .page-title-box {
+        padding: 18px 24px 14px;
+      }
+
+      .page-title {
+        font-size: 1.8rem;
+      }
+
+      .contact-block {
+        padding: 20px 24px 28px;
+      }
+
+      .contact-label {
+        font-size: 0.92rem;
+      }
+
+      .illustration {
+        width: 100%;
+        max-width: 260px;
+        order: -1; /* ilustracja nad kontaktem na mobile */
+      }
+    }
   </style>
 
   <div class="content-wrap">
@@ -112,7 +155,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
       <div class="contact-block">
 
-        <!-- Instagram -->
+        <!-- Instagram (zakomentowane)
         <a href="https://instagram.com/wawryn" target="_blank" rel="noopener noreferrer" class="contact-item">
           <div class="contact-icon">
             <svg viewBox="0 0 24 24">
@@ -123,28 +166,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <span class="contact-label">wawryn</span>
         </a>
+        -->
 
-        <!-- Twitter / X -->
-        <a href="https://twitter.com/wawryn" target="_blank" rel="noopener noreferrer" class="contact-item">
+        <!-- Ko-fi -->
+        <a href="https://ko-fi.com/swampcicada" target="_blank" rel="noopener noreferrer" class="contact-item">
           <div class="contact-icon">
             <svg viewBox="0 0 24 24">
-              <path d="M4 4 L20 20 M20 4 L4 20" stroke-width="2"/>
-              <path d="M2 5h6l4 5 4-5h6" stroke-width="1.4" fill="none"/>
-              <path d="M2 19h6l4-5 4 5h6" stroke-width="1.4" fill="none"/>
+              <path d="M4 5 Q3 5 3 6 L5 17 Q5.5 19 8 19.5 Q12 20.5 16 19.5 Q18.5 19 19 17 L21 6 Q21 5 20 5 Z"/>
+              <path d="M19 8 Q23 8 23 11.5 Q23 15 19 15"/>
+              <path d="M7 20 Q12 21.5 17 20"/>
+              <path d="M11.5 15 Q8 12 8 9.5 Q8 7 10.5 7 Q12 7 12 8.5 Q12 7 13.5 7 Q16 7 16 9.5 Q16 12 12.5 15 Z"/>
             </svg>
           </div>
-          <span class="contact-label">wawryn</span>
+          <span class="contact-label">Swapm Cicada</span>
         </a>
 
         <!-- Email -->
-        <a href="mailto:karolwbien@gmail.com" class="contact-item">
+        <a href="mailto:swampcicada@gmail.com" class="contact-item">
           <div class="contact-icon">
             <svg viewBox="0 0 24 24">
               <rect x="2" y="4" width="20" height="16" rx="2"/>
               <polyline points="2,4 12,13 22,4"/>
             </svg>
           </div>
-          <span class="contact-label">karolwbien@gmail.com</span>
+          <span class="contact-label">swampcicada@gmail.com</span>
         </a>
 
       </div>
@@ -152,7 +197,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <!-- Right: illustration -->
     <div class="illustration">
-      <img src="/images/cicada2.png" alt="mascot" />
+      <Image src={cicada2} alt="mascot" />
     </div>
 
   </div>

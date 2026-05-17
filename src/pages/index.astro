@@ -1,12 +1,46 @@
 ---
 // src/pages/index.astro
+import logo from '../assets/images/logo.svg?url';
+import { Image } from 'astro:assets';
+import WaterBackground from '../layouts/WaterBackground.astro';
+import WaterLilies from '../layouts/WaterLilies.astro';
+
+const imageModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/images/carousel/*.{jpg,jpeg,png,webp}'
+);
+
+// ─── USTAW KADROWANIE DLA WYBRANYCH SLAJDÓW ───────────────
+// pos – object-position (np. 'center top', 'center 20%')
+// fit – 'cover' (domyślnie, przycina) | 'contain' (całość widoczna)
+type SlideConfig = { pos?: string; fit?: string };
+const positions: Record<string, SlideConfig> = {
+  '01.png': { pos: 'top 50%'},
+  '03.png': { pos: 'center 20%' },
+  '04.png': { pos: 'center 20%' },
+};
+// ──────────────────────────────────────────────────────────
+
+const slides = await Promise.all(
+  Object.keys(imageModules)
+    .sort()
+    .map(async (path) => {
+      const mod = await imageModules[path]();
+      const filename = path.split('/').pop() ?? '';
+      const cfg = positions[filename] ?? {};
+      return {
+        src: mod.default,
+        pos: cfg.pos ?? 'center center',
+        fit: cfg.fit ?? 'cover',
+      };
+    })
+);
 ---
 
 <html lang="pl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portfolio</title>
+    <title>Swamp Cicada</title>
     <style>
       /* ─── CZCIONKI LOKALNE ────────────────────────────── */
       @font-face {
@@ -49,21 +83,27 @@
       }
 
       /* ─── BASE ────────────────────────────────────────── */
+      html {
+        background: var(--bg);
+      }
+
       html, body {
         width: 100%;
         height: 100%;
-        background: var(--bg);
         color: var(--white);
         font-family: "Mulish", sans-serif;
         overflow-x: hidden;
       }
 
       /* ─── LAYOUT ──────────────────────────────────────── */
+
       .page {
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative;
+        z-index: 1;
       }
 
       .inner {
@@ -71,7 +111,7 @@
         align-items: center;
         gap: 40px;
         padding: 60px 40px;
-        max-width: 900px;
+        max-width: 1000px;
         width: 100%;
       }
 
@@ -154,10 +194,9 @@
         opacity: 1;
       }
 
-      .slide img {
+      .slide canvas {
         width: 100%;
         height: 100%;
-        object-fit: cover;
         display: block;
       }
 
@@ -235,16 +274,67 @@
       .social-item:hover svg {
         opacity: 1;
       }
+
+      /* ─── RESPONSIVE ──────────────────────────────────── */
+      @media (max-width: 640px) {
+        .inner {
+          flex-direction: column;
+          align-items: center;
+          padding: 40px 24px;
+          gap: 32px;
+        }
+
+        .left {
+          width: 100%;
+          min-width: unset;
+          align-items: center;
+        }
+
+        .logo {
+          height: 64px;
+          margin-bottom: 24px;
+        }
+
+        .nav-group {
+          align-items: center;
+          margin-bottom: 20px;
+        }
+
+        .nav-link {
+          font-size: 0.9rem;
+        }
+
+        .right {
+          width: 100%;
+          align-items: center;
+        }
+
+        .slideshow {
+          max-width: 100%;
+        }
+
+        .social-row {
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 16px;
+        }
+
+        .social-item {
+          font-size: 0.88rem;
+        }
+      }
     </style>
   </head>
   <body>
+    <WaterBackground />
+    <WaterLilies />
     <div class="page">
       <div class="inner">
 
         <!-- Left: nav -->
         <nav class="left" aria-label="Main navigation">
           <a href="/" class="logo" aria-label="Logo">
-            <img src="/images/logo.svg" alt="Logo" />
+            <img src={logo} alt="Logo" />
           </a>
 
           <div class="nav-group">
@@ -262,24 +352,25 @@
         <!-- Right: slideshow + social -->
         <div class="right">
           <div class="slideshow" id="slideshow">
-            <div class="slide active">
-              <div class="slide-placeholder">artwork 01</div>
-            </div>
-            <div class="slide">
-              <div class="slide-placeholder">artwork 02</div>
-            </div>
-            <div class="slide">
-              <div class="slide-placeholder">artwork 03</div>
-            </div>
-            <div class="slide">
-              <div class="slide-placeholder">artwork 04</div>
-            </div>
+            {slides.length > 0
+              ? slides.map((img, i) => (
+                  <div class={`slide${i === 0 ? ' active' : ''}`}>
+                    <canvas class="slide-canvas" data-src={img.src.src} data-fit={img.fit} data-pos={img.pos}></canvas>
+                  </div>
+                ))
+              : [1,2,3,4].map((n) => (
+                  <div class={`slide${n === 1 ? ' active' : ''}`}>
+                    <div class="slide-placeholder">artwork {String(n).padStart(2,'0')}</div>
+                  </div>
+                ))
+            }
 
             <div class="slide-dots" id="dots"></div>
           </div>
 
           <!-- Social -->
           <div class="social-row">
+            <!-- Instagram (zakomentowane)
             <a
               href="https://instagram.com/wawryn"
               target="_blank"
@@ -293,13 +384,14 @@
               </svg>
               wawryn
             </a>
+            -->
 
-            <a href="mailto:karolwbien@gmail.com" class="social-item">
+            <a href="mailto:swampcicada@gmail.com" class="social-item">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="4" width="20" height="16" rx="2"/>
                 <polyline points="2,4 12,13 22,4"/>
               </svg>
-              karolwbien@gmail.com
+              swampcicada@gmail.com
             </a>
           </div>
         </div>
@@ -308,6 +400,60 @@
     </div>
 
     <script>
+      // ── Rysuj slajdy jako canvas
+      function parsePos(pos) {
+        const named = { left: 0, center: 0.5, right: 1, top: 0, bottom: 1 };
+        const parts = (pos || 'center center').trim().split(/\s+/);
+        function toFraction(p) {
+          if (p in named) return named[p];
+          if (p.endsWith('%')) return parseFloat(p) / 100;
+          return 0.5;
+        }
+        const x = toFraction(parts[0]);
+        const y = parts.length > 1 ? toFraction(parts[1]) : 0.5;
+        return { x, y };
+      }
+
+      function drawSlideCanvas(canvas) {
+        const src = canvas.dataset.src;
+        const fit = canvas.dataset.fit || 'cover';
+        const img = new window.Image();
+        img.onload = () => {
+          const parent = canvas.parentElement;
+          const rect = parent.getBoundingClientRect();
+          const w = rect.width || parent.offsetWidth || 600;
+          const h = rect.height || parent.offsetHeight || 400;
+          const dpr = devicePixelRatio || 1;
+          canvas.width = Math.round(w * dpr);
+          canvas.height = Math.round(h * dpr);
+          const ctx = canvas.getContext('2d');
+          if (fit === 'contain') {
+            const scale = Math.min(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+            const x = (canvas.width - img.naturalWidth * scale) / 2;
+            const y = (canvas.height - img.naturalHeight * scale) / 2;
+            ctx.drawImage(img, x, y, img.naturalWidth * scale, img.naturalHeight * scale);
+          } else {
+            const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+            const scaledW = img.naturalWidth * scale;
+            const scaledH = img.naturalHeight * scale;
+            const overflowX = scaledW - canvas.width;
+            const overflowY = scaledH - canvas.height;
+            const pos = parsePos(canvas.dataset.pos);
+            const x = -overflowX * pos.x;
+            const y = -overflowY * pos.y;
+            ctx.drawImage(img, x, y, scaledW, scaledH);
+          }
+        };
+        img.src = src;
+      }
+
+      document.querySelectorAll('.slide-canvas').forEach(c => drawSlideCanvas(c));
+
+      document.addEventListener('contextmenu', e => {
+        if (e.target.tagName === 'CANVAS') e.preventDefault();
+      });
+
+      // ── Karuzela
       const slides = document.querySelectorAll('.slide');
       const dotsContainer = document.getElementById('dots');
       let current = 0;
@@ -328,14 +474,19 @@
         current = (index + slides.length) % slides.length;
         slides[current].classList.add('active');
         dots[current].classList.add('active');
+        dotsContainer.classList.add('dots--visible');
       }
 
-      let timer = setInterval(() => goTo(current + 1), 5000);
+      const INTRO_PAUSE = 3000;
+      let timer = setTimeout(() => {
+        goTo(1);
+        timer = setInterval(() => goTo(current + 1), 3500);
+      }, INTRO_PAUSE);
 
       const slideshow = document.getElementById('slideshow');
-      slideshow.addEventListener('mouseenter', () => clearInterval(timer));
+      slideshow.addEventListener('mouseenter', () => { clearTimeout(timer); clearInterval(timer); });
       slideshow.addEventListener('mouseleave', () => {
-        timer = setInterval(() => goTo(current + 1), 5000);
+        timer = setInterval(() => goTo(current + 1), 3500);
       });
     </script>
   </body>

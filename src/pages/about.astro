@@ -1,9 +1,15 @@
 ---
 // src/pages/about.astro
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+import cicada from '../assets/images/cicada.png';
+import WaterBackground from '../layouts/WaterBackground.astro';
+import WaterLilies from '../layouts/WaterLilies.astro';
 ---
 
 <BaseLayout title="About" currentPage="/about">
+  <WaterBackground />
+  <WaterLilies />
   <style>
     .content-wrap {
       display: flex;
@@ -12,6 +18,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       min-height: calc(100vh - 80px);
       gap: 60px;
       padding: 0 48px;
+      position: relative;
+      z-index: 1;
     }
 
     /* ─── LEFT BLOCK ──────────────────────────────────── */
@@ -36,22 +44,68 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--white);
-      /* rough blocky feel */
       -webkit-text-stroke: 0.5px #ffffff44;
     }
 
     .text-block {
       background: #0e0b08;
       padding: 28px 36px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
 
     .bio-text {
       font-family: "Mulish", sans-serif;
-      font-size: 0.92rem;
+      font-size: 1rem;
       font-weight: 300;
       line-height: 1.9;
-      color: #c8c0b0;
-      /* Placeholder — podmień na swój tekst */
+      letter-spacing: 0.06em;
+      color: var(--white);
+    }
+
+    .bio-commission {
+      font-family: "Mulish", sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #ffffff;
+      margin-top: -10px;
+    }
+
+    /* ─── EMAIL — identyczne jak w contact.astro ─────────── */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--white);
+    }
+
+    .contact-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s;
+    }
+
+    .contact-label {
+      font-family: "Mulish", sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 0.06em;
     }
 
     /* ─── RIGHT ILLUSTRATION ──────────────────────────── */
@@ -64,11 +118,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       width: 100%;
       height: auto;
       display: block;
-      /* cutout feel — zakładamy że obrazek ma białe tło lub przezroczystość */
       filter: drop-shadow(0 4px 24px rgba(0,0,0,0.7));
     }
 
+    /* ─── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      .content-wrap {
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 24px;
+        gap: 32px;
+        min-height: unset;
+      }
 
+      .left-block {
+        max-width: 100%;
+      }
+
+      .page-title-box {
+        padding: 18px 24px 14px;
+      }
+
+      .page-title {
+        font-size: 1.8rem;
+      }
+
+      .text-block {
+        padding: 20px 24px 28px;
+      }
+
+      .illustration {
+        width: 100%;
+        max-width: 280px;
+        order: -1; /* ilustracja nad tekstem na mobile */
+      }
+    }
   </style>
 
   <div class="content-wrap">
@@ -80,24 +164,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
       <div class="text-block">
         <p class="bio-text">
-          {/*
-            Podmień ten tekst na swój opis.
-            Możesz użyć kilku akapitów:
-          */}
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-          cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-          non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          I'm a visual artist and cognitive science student working across
+          painting, digital art, and sculpture. My work spans the full spectrum:
+          from the delicate to the grotesque, from fantasy realms to our own natural world.
+          Insects, nature, the beautiful and the unsettling - I don't choose sides. <br>
+          Studying how the mind perceives and constructs reality has only deepened my
+          fascination with imagery - how visual experience shapes thought in ways we rarely notice.
+<!-- opcja 1: how we perceive far less than we think we do, and yet feel certain of what we see. -->
+<!-- opcja 2: how visual experience shapes thought in ways we rarely notice. -->
+<!-- opcja 3: how the same image can feel entirely different depending on the mind behind the eyes. -->
         </p>
+        <b class="bio-commission">Available for commissions and freelance work</b>
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <polyline points="2,4 12,13 22,4"/>
+            </svg>
+          </div>
+          <span class="contact-label">swapmcicada@gmail.com</span>
+        </div>
       </div>
     </div>
 
     <!-- Right: illustration -->
     <div class="illustration">
-      <img src="/images/cicada.png" alt="mascot" />
-
+      <Image src={cicada} alt="mascot" />
     </div>
 
   </div>

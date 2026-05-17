@@ -1,0 +1,66 @@
+---
+// src/layouts/WaterBackground.astro
+---
+
+<div class="water-bg" aria-hidden="true">
+  <div class="water-layer water-layer--1"></div>
+  <div class="water-layer water-layer--2"></div>
+  <div class="water-layer water-layer--3"></div>
+</div>
+
+<style>
+  .water-bg {
+    position: fixed;
+    inset: -10%;
+    z-index: 0;
+    pointer-events: none;
+    background: #0a0603;
+  }
+
+  /* każda warstwa to osobny gradient który porusza się niezależnie */
+  .water-layer {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+  }
+
+  /* ciepły brąz z lewej — przesuwa się powoli w prawo i w górę */
+  .water-layer--1 {
+    background: radial-gradient(ellipse 70% 55% at 20% 60%, #1f1208 0%, transparent 65%);
+    animation: wave1 14s ease-in-out infinite alternate;
+  }
+
+  /* głęboki brąz z prawej — przesuwa się w lewo i w dół */
+  .water-layer--2 {
+    background: radial-gradient(ellipse 60% 50% at 75% 35%, #1a0e06 0%, transparent 60%);
+    animation: wave2 18s ease-in-out infinite alternate;
+  }
+
+  /* najciemniejszy — środek, porusza się po skosie */
+  .water-layer--3 {
+    background: radial-gradient(ellipse 80% 45% at 50% 75%, #120a04 0%, transparent 55%);
+    animation: wave3 11s ease-in-out infinite alternate;
+  }
+
+  @keyframes wave1 {
+    0%   { transform: translateX(0%)   translateY(0%)   scale(1); }
+    25%  { transform: translateX(3%)   translateY(-2%)  scale(1.04); }
+    50%  { transform: translateX(1%)   translateY(3%)   scale(0.98); }
+    75%  { transform: translateX(-3%)  translateY(1%)   scale(1.03); }
+    100% { transform: translateX(2%)   translateY(-3%)  scale(1.01); }
+  }
+
+  @keyframes wave2 {
+    0%   { transform: translateX(0%)   translateY(0%)   scale(1); }
+    30%  { transform: translateX(-4%)  translateY(2%)   scale(1.05); }
+    60%  { transform: translateX(2%)   translateY(-3%)  scale(0.97); }
+    100% { transform: translateX(-2%)  translateY(4%)   scale(1.02); }
+  }
+
+  @keyframes wave3 {
+    0%   { transform: translateX(0%)   translateY(0%)   scale(1); }
+    40%  { transform: translateX(3%)   translateY(3%)   scale(1.03); }
+    70%  { transform: translateX(-2%)  translateY(-2%)  scale(0.99); }
+    100% { transform: translateX(4%)   translateY(2%)   scale(1.04); }
+  }
+</style>

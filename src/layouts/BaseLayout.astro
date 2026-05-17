@@ -5,6 +5,7 @@ export interface Props {
   currentPage?: string;
 }
 const { title, currentPage = '' } = Astro.props;
+import logo from '../assets/images/logo2.svg?url';
 
 const navLinks = [
   { href: '/digital-art', label: 'Digital Art' },
@@ -15,6 +16,8 @@ const secondaryLinks = [
   { href: '/about',   label: 'About'   },
   { href: '/contact', label: 'Contact' },
 ];
+
+const allLinks = [...navLinks, ...secondaryLinks];
 ---
 
 <html lang="pl">
@@ -71,10 +74,13 @@ const secondaryLinks = [
       }
 
       /* ─── BASE ────────────────────────────────────────── */
+      html {
+        background: var(--bg);
+      }
+
       html, body {
         width: 100%;
         min-height: 100%;
-        background: var(--bg);
         color: var(--white);
         font-family: "Mulish", sans-serif;
         overflow-x: hidden;
@@ -87,22 +93,27 @@ const secondaryLinks = [
         padding: 22px 48px;
         gap: 0;
         border-bottom: 1px solid #1c1510;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        background: #0a0603;
       }
 
-    .logo {
-      display: inline-block;
-      height: 40px;
-      width: auto;
-      margin-right: 52px;
-      flex-shrink: 0;
-    }
+      .logo {
+        display: inline-block;
+        height: 40px;
+        width: auto;
+        margin-right: 52px;
+        flex-shrink: 0;
+      }
 
-    .logo img {
-      height: 100%;
-      width: auto;
-      display: block;
-    }
-
+      .logo img {
+        height: 100%;
+        width: auto;
+        display: block;
+      }
 
       .nav-primary {
         display: flex;
@@ -142,18 +153,121 @@ const secondaryLinks = [
         text-decoration-thickness: 1.5px;
       }
 
+      /* ─── HAMBURGER ───────────────────────────────────── */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        width: 36px;
+        height: 36px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin-left: auto;
+        padding: 4px;
+        flex-shrink: 0;
+      }
+
+      .hamburger span {
+        display: block;
+        width: 100%;
+        height: 1.5px;
+        background: var(--white);
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        transform-origin: center;
+      }
+
+      /* animacja X gdy menu otwarte */
+      .hamburger.open span:nth-child(1) {
+        transform: translateY(6.5px) rotate(45deg);
+      }
+      .hamburger.open span:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.open span:nth-child(3) {
+        transform: translateY(-6.5px) rotate(-45deg);
+      }
+
+      /* ─── MOBILE MENU ─────────────────────────────────── */
+      .mobile-menu {
+        display: none;
+        flex-direction: column;
+        gap: 0;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #0d0a07;
+        border-bottom: 1px solid #1c1510;
+        z-index: 50;
+        padding: 8px 0;
+      }
+
+      .mobile-menu.open {
+        display: flex;
+      }
+
+      .mobile-menu .nav-link {
+        padding: 14px 28px;
+        font-size: 0.88rem;
+        letter-spacing: 0.2em;
+        border-bottom: 1px solid #1a1510;
+      }
+
+      .mobile-menu .nav-link:last-child {
+        border-bottom: none;
+      }
+
+      .mobile-menu .nav-divider {
+        height: 1px;
+        background: #2a2018;
+        margin: 4px 0;
+      }
+
       /* ─── PAGE CONTENT ────────────────────────────────── */
       .page-content {
-        padding: 48px 48px 64px;
+        padding: 96px 48px 64px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ─── RESPONSIVE ──────────────────────────────────── */
+      @media (max-width: 960px) {
+        .navbar {
+          padding: 16px 20px;
+        }
+
+        .logo {
+          margin-right: 0;
+          height: 34px;
+        }
+
+        /* schowaj desktop nav */
+        .nav-primary,
+        .nav-secondary {
+          display: none;
+        }
+
+        /* pokaż hamburger */
+        .hamburger {
+          display: flex;
+        }
+
+        .page-content {
+          padding: 80px 20px 48px;
+        }
       }
     </style>
   </head>
   <body>
 
     <header class="navbar">
-<a href="/" class="logo" aria-label="Portfolio">
-        <img src="/images/logo.svg" alt="Logo" />
-</a>
+      <a href="/" class="logo" aria-label="Portfolio">
+        <img src={logo} alt="Logo" />
+      </a>
+
+      <!-- Desktop: primary nav -->
       <nav class="nav-primary" aria-label="Primary navigation">
         {navLinks.map(link => (
           <a
@@ -165,6 +279,7 @@ const secondaryLinks = [
         ))}
       </nav>
 
+      <!-- Desktop: secondary nav -->
       <nav class="nav-secondary" aria-label="Secondary navigation">
         {secondaryLinks.map(link => (
           <a
@@ -175,11 +290,61 @@ const secondaryLinks = [
           </a>
         ))}
       </nav>
+
+      <!-- Mobile: hamburger button -->
+      <button class="hamburger" id="hamburger" aria-label="Otwórz menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- Mobile: dropdown menu -->
+      <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        {navLinks.map(link => (
+          <a
+            href={link.href}
+            class={`nav-link${currentPage === link.href ? ' active' : ''}`}
+          >
+            {link.label}
+          </a>
+        ))}
+        <div class="nav-divider"></div>
+        {secondaryLinks.map(link => (
+          <a
+            href={link.href}
+            class={`nav-link${currentPage === link.href ? ' active' : ''}`}
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
     </header>
 
     <main class="page-content">
       <slot />
     </main>
+
+    <script>
+      const btn = document.getElementById('hamburger');
+      const menu = document.getElementById('mobile-menu');
+
+      btn?.addEventListener('click', () => {
+        const isOpen = menu?.classList.toggle('open');
+        btn.classList.toggle('open', isOpen);
+        btn.setAttribute('aria-expanded', String(isOpen));
+        menu?.setAttribute('aria-hidden', String(!isOpen));
+      });
+
+      // zamknij menu po kliknięciu w link
+      menu?.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          menu.classList.remove('open');
+          btn?.classList.remove('open');
+          btn?.setAttribute('aria-expanded', 'false');
+          menu.setAttribute('aria-hidden', 'true');
+        });
+      });
+    </script>
 
   </body>
 </html>
